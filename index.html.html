@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Display</title>
+    <script src="https://use.fontawesome.com/3a2eaf6206.js"></script>
+    <style>
+         *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        html , body{
+            width: 100%;
+            height: 100%;
+        }
+        body{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px;
+            gap: 10px;
+        }
+        .main
+        {
+            width: 100%;
+            height: 100%;
+            display:none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px;
+            gap: 10px;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit:cover;
+            border-radius:51% 49% 55% 45% / 68% 72% 28% 32%  ;
+            filter:brightness(100%);
+        }
+        #label{
+        text-align:center;
+        padding:3%;
+        border:thin solid black;
+        width: 100%;
+      }
+      
+      input[type="file"]{
+        display: none;
+      }
+
+      label{
+        cursor:pointer;
+      }
+      #fileDisplay{
+    overflow: hidden;
+    border-radius: 10px;
+    border: none;
+      }
+      .loader{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader::before{
+        content: '';
+        border: 5px solid #999;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border-right: 5px solid #111;
+        animation: load .5s ease infinite;
+      }
+      @keyframes load {
+       0%{
+             rotate:0turn;
+        }
+       100%{
+             rotate:1turn;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <div class="main">
+        <div id="fileDisplay"></div>
+   <div id="label">
+    <label for="fileInput">
+        <i class="fa fa-2x fa-camera"></i>
+        <br>
+       <h2> Select Image </h2>
+        <input type="file" id="fileInput" accept="image/*" />
+    </label>
+   </div>
+    </div>
+<script>
+   // Get references to DOM elements
+const fileInput = document.getElementById('fileInput');
+const fileDisplay = document.getElementById('fileDisplay');
+
+// Function to display the file
+function displayFile(fileContent) {
+    fileDisplay.innerHTML = `<img src="${fileContent}" alt="Uploaded Image" width="200" loading="lazy">`;
+}
+
+// Add event listener for file input change
+fileInput.addEventListener('change', function() {
+    const file = fileInput.files[0];
+    
+    // Check if a file is selected
+    if (file) {
+        const reader = new FileReader();
+
+        // Read file as data URL
+        reader.readAsDataURL(file);
+
+        // Callback function for when file reading is complete
+        reader.onload = function() {
+            const fileContent = reader.result;
+
+            // Store file content in localStorage
+            localStorage.setItem('uploadedFile', fileContent);
+
+            // Display file on the screen
+            displayFile(fileContent);
+        };
+    }
+});
+
+// Check if there's a file in localStorage onload
+window.onload = function() {
+    const storedFile = localStorage.getItem('uploadedFile');
+
+    // If there's a file in localStorage, display it
+    if (storedFile) {
+        displayFile(storedFile);
+    }
+};
+
+window.addEventListener('load', () => {
+    let loader = document.querySelector(".loader");
+    let main = document.querySelector(".main");
+    loader.style.display = "none";
+    main.style.display = "flex";
+})
+
+</script>
+</body>
+</html>
